@@ -181,24 +181,10 @@ namespace CalendarDialog
         private void Calendar_grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Grid g = (Grid)sender;
-            TextBlock tb = new TextBlock();
-
-            tb.Width = 80;
-            tb.Margin = new Thickness(1);
-            tb.Background = Brushes.Orange;
-            tb.Text = "kszak";
 
             UIElement element = (UIElement)g.InputHitTest(e.GetPosition(g));
             supportRow = Grid.GetRow(element);
             supportColumn = Grid.GetColumn(element);
-
-            if(supportRow > 1 && supportColumn > 0)
-            {
-                calendar_grid.Children.Add(tb);
-                Grid.SetRowSpan(tb, 2);
-                Grid.SetColumn(tb, supportColumn);
-                Grid.SetRow(tb, supportRow);
-            }
 
             AddDate createNewEvent = new AddDate();
             createNewEvent.Show();
@@ -206,7 +192,16 @@ namespace CalendarDialog
 
         public void setNewEventOnGrid()
         {
-            Console.WriteLine("jestem dzikiem");
+            TextBlock tb = new TextBlock();
+
+            tb.Width = 80;
+            tb.Margin = new Thickness(1);
+            tb.Background = Brushes.Orange;
+            tb.Text = mainEvent.eventName + "\nOd: " + mainEvent.startHour + "\nDo: " + mainEvent.endHour + "\nLokalizacja: " + mainEvent.localization + "\nCharakter: " + mainEvent.eventNature;
+            calendar_grid.Children.Add(tb);
+            Grid.SetRowSpan(tb, Int32.Parse(mainEvent.endHour) - Int32.Parse(mainEvent.startHour));
+            Grid.SetColumn(tb, supportColumn);
+            Grid.SetRow(tb, Int32.Parse(mainEvent.startHour)+1);
         }
     }
 }

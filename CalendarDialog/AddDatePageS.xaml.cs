@@ -30,10 +30,11 @@ namespace CalendarDialog
 
         private void Check_Click(object sender, RoutedEventArgs e)
         {
-            newEvent.row = ((MainWindow)Application.Current.MainWindow).supportRow;
-            newEvent.column = ((MainWindow)Application.Current.MainWindow).supportColumn;
+            //newEvent.row = ((MainWindow)Application.Current.MainWindow).supportRow;
+            //newEvent.column = ((MainWindow)Application.Current.MainWindow).supportColumn;
             ((MainWindow)Application.Current.MainWindow).mainEvent = newEvent;
             ((MainWindow)Application.Current.MainWindow).setNewEventOnGrid();
+            Application.Current.Windows[1].Close();
 
         }
 
