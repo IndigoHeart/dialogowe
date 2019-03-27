@@ -20,6 +20,9 @@ namespace CalendarDialog
     /// </summary>
     public partial class MainWindow : Window
     {
+        public NewEvent mainEvent;
+        public int supportRow { get; set; }
+        public int supportColumn { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -179,24 +182,31 @@ namespace CalendarDialog
         {
             Grid g = (Grid)sender;
             TextBlock tb = new TextBlock();
+
             tb.Width = 80;
             tb.Margin = new Thickness(1);
             tb.Background = Brushes.Orange;
             tb.Text = "kszak";
+
             UIElement element = (UIElement)g.InputHitTest(e.GetPosition(g));
-            int row = Grid.GetRow(element);
-            int column = Grid.GetColumn(element);
-            if(row>1 && column > 0)
+            supportRow = Grid.GetRow(element);
+            supportColumn = Grid.GetColumn(element);
+
+            if(supportRow > 1 && supportColumn > 0)
             {
                 calendar_grid.Children.Add(tb);
                 Grid.SetRowSpan(tb, 2);
-                Grid.SetColumn(tb, column);
-                Grid.SetRow(tb, row);
+                Grid.SetColumn(tb, supportColumn);
+                Grid.SetRow(tb, supportRow);
             }
-            ownCanvas oc = new ownCanvas();
-            topWindow.Children.Add(oc.canvas);
-            AddDate x = new AddDate();
-            x.Show();
+
+            AddDate createNewEvent = new AddDate();
+            createNewEvent.Show();
+        }
+
+        public void setNewEventOnGrid()
+        {
+            Console.WriteLine("jestem dzikiem");
         }
     }
 }

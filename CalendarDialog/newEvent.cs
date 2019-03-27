@@ -13,5 +13,7 @@ namespace CalendarDialog
         public string endHour { get; set; }
         public string localization { get; set; }
         public string eventNature { get; set; }
+        public int row { get; set; }
+        public int column { get; set; }
     }
 }
