@@ -195,6 +195,8 @@ namespace CalendarDialog
             }
             ownCanvas oc = new ownCanvas();
             topWindow.Children.Add(oc.canvas);
+            AddDate x = new AddDate();
+            x.Show();
         }
     }
 }

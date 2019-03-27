@@ -104,7 +104,7 @@ namespace CalendarDialog
 
         private void Anuluj_MouseLeftButtonDown1(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
 
         private void Zapisz_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

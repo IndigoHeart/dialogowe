@@ -55,14 +55,64 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="AddDate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddDatePage1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddDatePage2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddDatePage3.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddDatePage4.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddDatePage5.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddDatePageS.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="AddDate.xaml.cs">
+      <DependentUpon>AddDate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddDatePage1.xaml.cs">
+      <DependentUpon>AddDatePage1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddDatePage2.xaml.cs">
+      <DependentUpon>AddDatePage2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddDatePage3.xaml.cs">
+      <DependentUpon>AddDatePage3.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddDatePage4.xaml.cs">
+      <DependentUpon>AddDatePage4.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddDatePage5.xaml.cs">
+      <DependentUpon>AddDatePage5.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddDatePageS.xaml.cs">
+      <DependentUpon>AddDatePageS.xaml</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="NewEvent.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

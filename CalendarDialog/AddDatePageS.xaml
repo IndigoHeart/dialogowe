@@ -1,0 +1,21 @@
+﻿<Page x:Class="CalendarDialog.AddDatePageS"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CalendarDialog"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="400"
+      Title="AddDatePageS">
+
+    <Grid Background="FloralWhite">
+        <Button Name="check" Content="Dodaj" HorizontalAlignment="Left" 
+                Height="45" Margin="38,232,0,0" VerticalAlignment="Top" 
+                Width="140" FontSize="22" Click="Check_Click"/>
+        <Button Name="cancel" Content="Anuluj" HorizontalAlignment="Left" 
+                Height="40" Margin="214,232,0,0" VerticalAlignment="Top" 
+                Width="140" FontSize="22" Click="Cancel_Click"/>
+        <Label Content="Podsumowanie" HorizontalAlignment="Left" Height="50" Margin="38,28,0,0" VerticalAlignment="Top" Width="316" FontSize="22"/>
+        <Label Name="podsumowanie" Content="" HorizontalAlignment="Left" Margin="38,78,0,0" VerticalAlignment="Top" Height="134" Width="316" FontSize="16"/>
+    </Grid>
+</Page>
