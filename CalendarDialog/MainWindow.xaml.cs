@@ -21,13 +21,17 @@ namespace CalendarDialog
     public partial class MainWindow : Window
     {
         public NewEvent mainEvent;
+        public DateTime firstDayOfTheWeek { get; set; }
         public int supportRow { get; set; }
         public int supportColumn { get; set; }
+
+        EventContext _context;
         public MainWindow()
         {
             InitializeComponent();
             setGridInitial();
             setInitialDate();
+            _context = new EventContext();
         }
 
         // ustawia dni w tygodniu na siatce kalendarza
@@ -35,9 +39,9 @@ namespace CalendarDialog
         {
             DateTime today = DateTime.Now;
             int dayOfWeek = (int)today.DayOfWeek;
+            firstDayOfTheWeek = setFirstDayOfWeek(today, 0);
 
-
-            for(int i = 1; i<calendar_grid.ColumnDefinitions.Count; i++)
+            for (int i = 1; i<calendar_grid.ColumnDefinitions.Count; i++)
             {
                 String str = findDayOfWeek(today, i);
                 TextBlock txtBlock = new TextBlock(new Run(str));
@@ -53,6 +57,22 @@ namespace CalendarDialog
                 Grid.SetRow(txtBlock, 1);
             }
 
+        }
+
+        DateTime setFirstDayOfWeek(DateTime dT, int i)
+        {
+            DateTime newDateTime = new DateTime();
+            int dayOfWeek = (int)dT.DayOfWeek;
+
+            if (dayOfWeek > 0)
+            {
+                newDateTime = dT.AddDays(-dayOfWeek + i);
+            }
+            else if (dayOfWeek == 0)
+            {
+                newDateTime = dT.AddDays(i - 7);
+            }
+            return newDateTime;
         }
 
         string findDayOfWeek(DateTime dateTime, int i)
@@ -73,6 +93,8 @@ namespace CalendarDialog
 
         void setNewDates(DateTime dateTime)
         {
+            firstDayOfTheWeek = setFirstDayOfWeek(dateTime, 0);
+
             for(int j=1; j<calendar_grid.ColumnDefinitions.Count; j++)
             {
                 String str = findDayOfWeek(dateTime, j);
@@ -132,16 +154,6 @@ namespace CalendarDialog
                 }
             }
 
-            void OnClickGrid(object sender, RoutedEventArgs e)
-            {
-                //Grid g = (Grid)sender;
-                //TextBlock tb = new TextBlock();
-                //tb.Background = Brushes.Orange;
-                //tb.Text = "kszak";
-                //tb.Margin = new Thickness(10);
-                //g.Children.Add(tb);
-            }
-
             // ustawia godziny na siatce kalendarza
             for(int i=2; i<calendar_grid.RowDefinitions.Count; i++)
             {
@@ -193,15 +205,18 @@ namespace CalendarDialog
         public void setNewEventOnGrid()
         {
             TextBlock tb = new TextBlock();
-
+            mainEvent.dateOfEvent = firstDayOfTheWeek.AddDays(supportColumn);
             tb.Width = 80;
             tb.Margin = new Thickness(1);
             tb.Background = Brushes.Orange;
-            tb.Text = mainEvent.eventName + "\nOd: " + mainEvent.startHour + "\nDo: " + mainEvent.endHour + "\nLokalizacja: " + mainEvent.localization + "\nCharakter: " + mainEvent.eventNature;
+            tb.Text = mainEvent.eventName + "\nOd: " + mainEvent.startHour + "\nDo: " + mainEvent.endHour + "\nLokalizacja: " + 
+                mainEvent.localization + "\nCharakter: " + mainEvent.eventNature + "\nData: " + mainEvent.dateOfEvent.ToString();
             calendar_grid.Children.Add(tb);
             Grid.SetRowSpan(tb, Int32.Parse(mainEvent.endHour) - Int32.Parse(mainEvent.startHour));
             Grid.SetColumn(tb, supportColumn);
             Grid.SetRow(tb, Int32.Parse(mainEvent.startHour)+1);
+            _context.newEvents.Add(mainEvent);
+            _context.SaveChanges();
         }
     }
 }
