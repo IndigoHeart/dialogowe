@@ -8,7 +8,9 @@ namespace CalendarDialog
 {
     public class NewEvent
     {
+        public int Id { get; set; }
         public string eventName { get; set; }
+        public DateTime dateOfEvent { get; set; }
         public string startHour { get; set; }
         public string endHour { get; set; }
         public string localization { get; set; }

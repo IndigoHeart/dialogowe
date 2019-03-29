@@ -25,8 +25,11 @@ namespace CalendarDialog
     public partial class MainWindow : Window
     {
         public NewEvent mainEvent;
+        public DateTime firstDayOfTheWeek { get; set; }
         public int supportRow { get; set; }
         public int supportColumn { get; set; }
+
+        EventContext _context;
         SpeechRecognitionEngine recEngine = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("pl-PL"));
         public MainWindow()
         {
@@ -50,6 +53,42 @@ namespace CalendarDialog
                 Console.WriteLine(ex.Message);
                 Console.ReadLine();
             }
+            _context = new EventContext();
+            loadEventsFromDatabase(DateTime.Now);
+        }
+
+        private void loadEventsFromDatabase(DateTime datetime)
+        {
+            DateTime firstDay;
+            DateTime lastDay;
+
+            firstDay = setFirstDayOfWeek(datetime, 0);
+            lastDay = setFirstDayOfWeek(datetime, 6);
+
+            // po pierwszym dniu tygodnia
+            var query = _context.newEvents.Where(s => s.dateOfEvent >= firstDay);
+            // przed ostatnim dniem tygodnia
+            query = query.Where(s => s.dateOfEvent <= lastDay);
+
+            foreach (var element in query)
+            {
+                NewEvent ne = (NewEvent)element;
+                drawEventOnGrid(ne);
+            }
+        }
+
+        private void drawEventOnGrid(NewEvent ne)
+        {
+            TextBlock tb = new TextBlock();
+            tb.Width = 80;
+            tb.Margin = new Thickness(1);
+            tb.Background = Brushes.Orange;
+            tb.Text = ne.eventName + "\nOd: " + ne.startHour + "\nDo: " + ne.endHour + "\nLok: " +
+                ne.localization + "\nRodzaj: " + ne.eventNature + "\nData: " + ne.dateOfEvent.ToString();
+            calendar_grid.Children.Add(tb);
+            Grid.SetRowSpan(tb, Int32.Parse(ne.endHour) - Int32.Parse(ne.startHour));
+            Grid.SetColumn(tb, ne.column);
+            Grid.SetRow(tb, Int32.Parse(ne.startHour) + 1);
         }
 
         private void recEngine_SpeachRecognized(object sender, SpeechRecognizedEventArgs e)
@@ -70,9 +109,9 @@ namespace CalendarDialog
         {
             DateTime today = DateTime.Now;
             int dayOfWeek = (int)today.DayOfWeek;
+            firstDayOfTheWeek = setFirstDayOfWeek(today, 0);
 
-
-            for(int i = 1; i<calendar_grid.ColumnDefinitions.Count; i++)
+            for (int i = 1; i<calendar_grid.ColumnDefinitions.Count; i++)
             {
                 String str = findDayOfWeek(today, i);
                 TextBlock txtBlock = new TextBlock(new Run(str));
@@ -88,6 +127,22 @@ namespace CalendarDialog
                 Grid.SetRow(txtBlock, 1);
             }
 
+        }
+
+        DateTime setFirstDayOfWeek(DateTime dT, int i)
+        {
+            DateTime newDateTime = new DateTime();
+            int dayOfWeek = (int)dT.DayOfWeek;
+
+            if (dayOfWeek > 0)
+            {
+                newDateTime = dT.AddDays(-dayOfWeek + i);
+            }
+            else if (dayOfWeek == 0)
+            {
+                newDateTime = dT.AddDays(i - 7);
+            }
+            return newDateTime;
         }
 
         string findDayOfWeek(DateTime dateTime, int i)
@@ -108,6 +163,8 @@ namespace CalendarDialog
 
         void setNewDates(DateTime dateTime)
         {
+            firstDayOfTheWeek = setFirstDayOfWeek(dateTime, 0);
+
             for(int j=1; j<calendar_grid.ColumnDefinitions.Count; j++)
             {
                 String str = findDayOfWeek(dateTime, j);
@@ -167,6 +224,8 @@ namespace CalendarDialog
                 }
             }
 
+            }
+
             
             // ustawia godziny na siatce kalendarza
             for(int i=2; i<calendar_grid.RowDefinitions.Count; i++)
@@ -197,6 +256,8 @@ namespace CalendarDialog
         {
             textbox1.Text = calendar.SelectedDate.Value.DayOfWeek.ToString() + " " + calendar.SelectedDate.Value.ToString();
             setNewDates(calendar.SelectedDate.Value);
+            setGridInitial();
+            loadEventsFromDatabase(calendar.SelectedDate.Value.Date);
         }
 
         private void Button_close_app_Click(object sender, RoutedEventArgs e)
@@ -219,15 +280,20 @@ namespace CalendarDialog
         public void setNewEventOnGrid()
         {
             TextBlock tb = new TextBlock();
-
+            mainEvent.dateOfEvent = firstDayOfTheWeek.AddDays(supportColumn);
             tb.Width = 80;
             tb.Margin = new Thickness(1);
             tb.Background = Brushes.Orange;
-            tb.Text = mainEvent.eventName + "\nOd: " + mainEvent.startHour + "\nDo: " + mainEvent.endHour + "\nLokalizacja: " + mainEvent.localization + "\nCharakter: " + mainEvent.eventNature;
+            tb.Text = mainEvent.eventName + "\nOd: " + mainEvent.startHour + "\nDo: " + mainEvent.endHour + "\nLok: " + 
+                mainEvent.localization + "\nRodzaj: " + mainEvent.eventNature + "\nData: " + mainEvent.dateOfEvent.ToString();
             calendar_grid.Children.Add(tb);
             Grid.SetRowSpan(tb, Int32.Parse(mainEvent.endHour) - Int32.Parse(mainEvent.startHour));
             Grid.SetColumn(tb, supportColumn);
             Grid.SetRow(tb, Int32.Parse(mainEvent.startHour)+1);
+            mainEvent.row = Int32.Parse(mainEvent.startHour) + 1;
+            mainEvent.column = supportColumn;
+            _context.newEvents.Add(mainEvent);
+            _context.SaveChanges();
         }
     }
 }
