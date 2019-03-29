@@ -12,6 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Speech.Recognition;
+using Microsoft.Speech.Synthesis;
+
+
 
 namespace CalendarDialog
 {
@@ -23,11 +27,42 @@ namespace CalendarDialog
         public NewEvent mainEvent;
         public int supportRow { get; set; }
         public int supportColumn { get; set; }
+        SpeechRecognitionEngine recEngine = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("pl-PL"));
         public MainWindow()
         {
             InitializeComponent();
             setGridInitial();
             setInitialDate();
+            Choices commandsChoices = new Choices();
+            commandsChoices.Add(new string[] {"Nowe zadanie", "Dodaj"});
+            try
+            {
+                GrammarBuilder gBuilder = new GrammarBuilder();
+                gBuilder.Append(commandsChoices);
+                Grammar grammar = new Grammar(gBuilder);
+                recEngine.LoadGrammarAsync(grammar);
+                recEngine.SetInputToDefaultAudioDevice();
+                recEngine.RecognizeAsync(RecognizeMode.Multiple);
+                recEngine.SpeechRecognized += recEngine_SpeachRecognized;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadLine();
+            }
+        }
+
+        private void recEngine_SpeachRecognized(object sender, SpeechRecognizedEventArgs e)
+        {
+            if (e.Result.Confidence >= 0.70)
+            {
+                Console.WriteLine("Wykrylem " + e.Result.Text);
+                AddDate createNewEvent = new AddDate();
+                createNewEvent.Show();
+
+            }
+            else
+                Console.WriteLine("Unknown word: " + e.Result.Text + ", Confidence: " + e.Result.Confidence);
         }
 
         // ustawia dni w tygodniu na siatce kalendarza
@@ -132,16 +167,7 @@ namespace CalendarDialog
                 }
             }
 
-            void OnClickGrid(object sender, RoutedEventArgs e)
-            {
-                //Grid g = (Grid)sender;
-                //TextBlock tb = new TextBlock();
-                //tb.Background = Brushes.Orange;
-                //tb.Text = "kszak";
-                //tb.Margin = new Thickness(10);
-                //g.Children.Add(tb);
-            }
-
+            
             // ustawia godziny na siatce kalendarza
             for(int i=2; i<calendar_grid.RowDefinitions.Count; i++)
             {
